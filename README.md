@@ -9,7 +9,7 @@ FixedPointJAX is a simple implementation of a fixed-point iteration algorithm fo
 ## Installation
 
 ```bash
-pip install FixedPointJAX
+pip install fxp-jax
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ pip install FixedPointJAX
 import jax.numpy as jnp
 from jax import random
 
-from FixedPointJAX import FixedPointRoot
+from fxp_jax import fxp_root
 
 # Define the logit probabilities
 def logit(x, axis=1):
@@ -28,7 +28,7 @@ def logit(x, axis=1):
 	return nominator / denominator
 	
 # Define the function for the fixed-point iteration
-def fxp(x):
+def fun(x):
 	s = logit(x)
 	z = jnp.log(s0 / s)
 	return x + z, z
@@ -42,11 +42,14 @@ s0 = random.dirichlet(key=random.PRNGKey(123), alpha=jnp.ones((J,)), shape=(I,))
 # Initial guess
 x0 = jnp.zeros_like(s0)
 
-print('-----------------------------------------')
+print('--------------------------------------------------------')
 # Solve the fixed-point equation
-x, (step_norm, root_norm, iterations) = FixedPointRoot(fxp, x0)
-print('-----------------------------------------')
-print(f'System of fixed-point equations is solved: {jnp.allclose(x,fxp(x)[0])}.')
-print(f'Probabilities are identical: {jnp.allclose(s0, logit(x))}.')
-print('-----------------------------------------')
+fxp = fxp_root(
+        fun,
+    )
+result = fxp.solve(guess=jnp.zeros_like(s0), accelerator="None")
+print('--------------------------------------------------------')
+print(f'System of fixed-point equations is solved: {jnp.allclose(result.x,fun(result.x)[0])}.')
+print(f'Probabilities are identical: {jnp.allclose(s0, logit(result.x))}.')
+print('--------------------------------------------------------')
 ```
