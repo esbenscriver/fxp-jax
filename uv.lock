@@ -22,6 +22,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "jax" },
+    { name = "simple-pytree" },
 ]
 
 [package.dev-dependencies]
@@ -32,7 +33,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "jax", specifier = ">=0.7.0" }]
+requires-dist = [
+    { name = "jax", specifier = ">=0.7.0" },
+    { name = "simple-pytree", specifier = ">=0.2.2" },
+]
 
 [package.metadata.requires-dev]
 dev = [
@@ -372,6 +376,20 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/95/47/1a0b0aff40c3056d955f38b0df5d178350c3d74734ec54f9c68d23910be5/scipy-1.16.1-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:5e1a106f8c023d57a2a903e771228bf5c5b27b5d692088f457acacd3b54511e4", size = 35665080, upload-time = "2025-07-27T16:31:42.025Z" },
     { url = "https://files.pythonhosted.org/packages/64/df/ce88803e9ed6e27fe9b9abefa157cf2c80e4fa527cf17ee14be41f790ad4/scipy-1.16.1-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:709559a1db68a9abc3b2c8672c4badf1614f3b440b3ab326d86a5c0491eafae3", size = 38050306, upload-time = "2025-07-27T16:31:48.109Z" },
     { url = "https://files.pythonhosted.org/packages/6e/6c/a76329897a7cae4937d403e623aa6aaea616a0bb5b36588f0b9d1c9a3739/scipy-1.16.1-cp314-cp314t-win_amd64.whl", hash = "sha256:c0c804d60492a0aad7f5b2bb1862f4548b990049e27e828391ff2bf6f7199998", size = 39427705, upload-time = "2025-07-27T16:31:53.96Z" },
+]
+
+[[package]]
+name = "simple-pytree"
+version = "0.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jax" },
+    { name = "jaxlib" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8e/b0/b2e7ea15dfb26bf014cfb6243a9bb20b9477ee2f12d754257514f508639a/simple_pytree-0.2.2.tar.gz", hash = "sha256:b61eddb5b5de558209dfb6464a041c5faf06af2c3cab582f4d69543a773dab0e", size = 5331, upload-time = "2023-09-06T17:04:21.321Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/16/0272467306ef489512a843222567c9939b9aff7003f15474a1ef90168c8f/simple_pytree-0.2.2-py3-none-any.whl", hash = "sha256:3a7a2f66883194ab14875dd01c4306c4f102f31d90e7e2d421366f12a2c49bab", size = 6235, upload-time = "2023-09-06T17:04:19.658Z" },
 ]
 
 [[package]]
