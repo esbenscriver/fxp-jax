@@ -1,5 +1,6 @@
 [![PyPI version](https://img.shields.io/pypi/v/fxp-jax.svg)](https://pypi.org/project/fxp-jax/)
-[![CI](https://github.com/esbenscriver/FixedPointJAX/actions/workflows/ci.yml/badge.svg)](https://github.com/esbenscriver/FixedPointJAX/actions)
+[![CI](https://github.com/esbenscriver/FixedPointJAX/actions/workflows/ci.yml/badge.svg)](https://github.com/esbenscriver/FixedPointJAX/actions/workflows/ci.yml)
+[![CD](https://github.com/esbenscriver/FixedPointJAX/actions/workflows/cd.yml/badge.svg)](https://github.com/esbenscriver/FixedPointJAX/actions/workflows/cd.yml)
 # Fixed-point solver
 FixedPointJAX is a simple implementation of a fixed-point iteration algorithm for root finding in JAX. The implementation allow the user to solve the system of fixed point equations by standard fixed point iterations and the SQUAREM accelerator, see [Du and Varadhan (2020)](https://www.jstatsoft.org/article/view/v092i07).
 
