@@ -1,6 +1,6 @@
 [project]
 name = "fxp-jax"
-version = "0.1.19"
+version = "0.1.21"
 description = "Simple fixed-point solver implemented in JAX"
 readme = "README.md"
 requires-python = ">=3.11"

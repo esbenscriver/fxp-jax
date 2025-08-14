@@ -7,11 +7,12 @@ from typing import Callable
 
 @dataclass
 class FixedPointState(Pytree):
-    """Simple pytree containing state information.
-    Attributes:
-        iter_num: iteration number
-        error: residuals of current estimate
-        aux: auxiliary output of fixed_point_fun when has_aux=True
+    """ State information
+
+        Attributes:
+            iter_num (int): iteration number
+            step_norm (jnp.ndarray): norm of step
+            root_norm (jnp.ndarray): norm of root
     """
     iter_num: int
     step_norm: jnp.ndarray
@@ -19,13 +20,19 @@ class FixedPointState(Pytree):
     
 @dataclass
 class OptStep(Pytree):
-  x: jnp.ndarray
-  state: FixedPointState
+    """ Current guess of the solution and state information
+
+        Attributes:
+            x (jnp.ndarray): current guess of the solution
+            state (FixedPointState): state information
+    """
+    x: jnp.ndarray
+    state: FixedPointState
 @dataclass
 class fxp_root(Pytree, mutable=True):
     """Initialize the solver state.
 
-        Args:
+        Attributes:
             fun (Callable): system of fixed-point equations
             step_tol (float): tolerance level for step norm
             root_tol (float): tolerance level for root norm
@@ -41,12 +48,8 @@ class fxp_root(Pytree, mutable=True):
     def _init_state(self) -> FixedPointState:
         """Initialize the solver state.
 
-            Args:
-            init_params: initial guess of the fixed point, pytree
-            *args: additional positional arguments to be passed to ``optimality_fun``.
-            **kwargs: additional keyword arguments to be passed to ``optimality_fun``.
             Returns:
-            state
+                state (FixedPointState)
         """
         return FixedPointState(
             iter_num=0,
