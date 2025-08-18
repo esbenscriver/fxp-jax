@@ -14,40 +14,34 @@ pip install fxp-jax
 
 ```python
 
+import jax
 import jax.numpy as jnp
 from jax import random
 
 from fxp_jax import fxp_root
 
-# Define the logit probabilities
-def logit(x, axis=1):
-	nominator = jnp.exp(x - jnp.max(x, axis=axis, keepdims=True))
-	denominator = jnp.sum(nominator, axis=axis, keepdims=True)
-	return nominator / denominator
-	
-# Define the function for the fixed-point iteration
-def fun(x):
-	s = logit(x)
-	z = jnp.log(s0 / s)
-	return x + z, z
+jax.config.update("jax_enable_x64", True)
 
-# Dimensions of system of fixed-point equations
-I, J = 3, 4
+accelerator = "squarem"
 
-# Simulate probabilities
-s0 = random.dirichlet(key=random.PRNGKey(123), alpha=jnp.ones((J,)), shape=(I,))
+N = 100
 
-# Initial guess
-x0 = jnp.zeros_like(s0)
+a = random.uniform(random.PRNGKey(111), (N,1))
+b = random.uniform(random.PRNGKey(112), (1,1))
 
-print('--------------------------------------------------------')
-# Solve the fixed-point equation
+def fun(x: jnp.ndarray) -> tuple[jnp.ndarray, jnp.ndarray]:
+    y = a + x @ b
+    return y, y - x
+
 fxp = fxp_root(
-        fun,
-    )
-result = fxp.solve(guess=jnp.zeros_like(s0), accelerator="None")
+    fun,
+)
+result = fxp.solve(guess=jnp.zeros_like(a), accelerator=accelerator)
+
+y, z = fxp.fun(result.x)
+
 print('--------------------------------------------------------')
-print(f'System of fixed-point equations is solved: {jnp.allclose(result.x,fun(result.x)[0])}.')
-print(f'Probabilities are identical: {jnp.allclose(s0, logit(result.x))}.')
+print(f'System of fixed-point equations is solved: {jnp.allclose(result.x, y)}.')
+print(f'Roots are zero: {jnp.allclose(z, 0.0)}.')
 print('--------------------------------------------------------')
 ```
