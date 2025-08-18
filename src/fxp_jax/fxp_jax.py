@@ -44,6 +44,7 @@ class fxp_root(Pytree, mutable=True):
     step_tol: float = 1e-8
     root_tol: float = 1e-6
     max_iter: int = 1000
+    accelerator: str|None = None
 
     def _init_state(self) -> FixedPointState:
         """Initialize the solver state.
@@ -57,7 +58,7 @@ class fxp_root(Pytree, mutable=True):
             root_norm=jnp.asarray(jnp.inf),
         )
 
-    def _update_none(self, fxp: Callable, step: OptStep) -> OptStep:
+    def _update_none(self, fxp: Callable, step: OptStep, *args, **kwargs) -> OptStep:
         """Update fixed-point
 
             Args:
@@ -67,7 +68,7 @@ class fxp_root(Pytree, mutable=True):
             Returns:
                 step_next (OptStep): updated states 
         """
-        x_next, root = fxp(step.x)
+        x_next, root = fxp(step.x, *args, **kwargs)
 
         next_state = FixedPointState(
             iter_num=step.state.iter_num + 1,
@@ -76,7 +77,7 @@ class fxp_root(Pytree, mutable=True):
         ) 
         return OptStep(x=x_next, state=next_state)
 
-    def _update_squarem(self, fxp: Callable, step: OptStep) -> OptStep:
+    def _update_squarem(self, fxp: Callable, step: OptStep, *args, **kwargs) -> OptStep:
         """Update fixed-point by SQUAREM
 
             Args:
@@ -87,8 +88,8 @@ class fxp_root(Pytree, mutable=True):
                 step_next (OptStep): updated states 
         """
 
-        x1 = fxp(step.x)[0] # first fixed-point step
-        x2 = fxp(x1)[0] # second fixed-point step
+        x1 = fxp(step.x, *args, **kwargs)[0] # first fixed-point step
+        x2 = fxp(x1, *args, **kwargs)[0] # second fixed-point step
 
         # Accelerated step
         r = x1 - step.x # change
@@ -96,7 +97,7 @@ class fxp_root(Pytree, mutable=True):
 
         alpha =-jnp.sqrt(jnp.sum(r**2) / jnp.sum(v**2))
 
-        x_next, root = fxp(step.x - 2 * alpha * r + (alpha**2) * v)
+        x_next, root = fxp(step.x - 2 * alpha * r + (alpha**2) * v, *args, **kwargs)
 
         next_state = FixedPointState(
             iter_num=step.state.iter_num + 1,
@@ -124,22 +125,21 @@ class fxp_root(Pytree, mutable=True):
         cond_tol = jnp.logical_and(cond1, cond2) #step or root is close to zero
         return jnp.all(jnp.logical_and(jnp.logical_and(cond_tol, cond3), cond4))
 
-    def solve(self, guess: jnp.ndarray, accelerator: str|None = None) -> OptStep:
+    def solve(self, guess: jnp.ndarray, *args, **kwargs) -> OptStep:
         """Solve fixed-point equation by fixed point iterations
 
             Args:
                 guess (jnp.ndarray): initial guess
-                accelerator (str): specifies which accelerator to be used ("None" or "SQUAREM")
 
             Returns:
                 state (OptStep): dataclass containing the solution to the fixed-point
 
         """
 
-        if accelerator == "SQUAREM":
+        if self.accelerator == "SQUAREM":
             # Set up accelerated fixed-point equations (SQUAREM)
             def _fun_squarem(step):
-                return self._update_squarem(self.fun, step)
+                return self._update_squarem(self.fun, step, *args, **kwargs)
             
             # Execute fixed-point iterations
             result = lax.while_loop(
@@ -150,7 +150,7 @@ class fxp_root(Pytree, mutable=True):
         else:
             # Set up fixed-point equations
             def _fun_none(step):
-                return self._update_none(self.fun, step)
+                return self._update_none(self.fun, step, *args, **kwargs)
             
             # Execute fixed-point iterations
             result = lax.while_loop(

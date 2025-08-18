@@ -18,8 +18,8 @@ wheels = [
 
 [[package]]
 name = "fxp-jax"
-version = "0.1.21"
-source = { virtual = "." }
+version = "0.2.0"
+source = { editable = "." }
 dependencies = [
     { name = "jax" },
     { name = "simple-pytree" },

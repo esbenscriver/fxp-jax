@@ -33,10 +33,9 @@ def fun(x: jnp.ndarray) -> tuple[jnp.ndarray, jnp.ndarray]:
     y = a + x @ b
     return y, y - x
 
-fxp = fxp_root(
-    fun,
-)
-result = fxp.solve(guess=jnp.zeros_like(a), accelerator=accelerator)
+fxp = fxp_root(fun, accelerator=accelerator)
+
+result = fxp.solve(jnp.zeros_like(a))
 
 y, z = fxp.fun(result.x)
 

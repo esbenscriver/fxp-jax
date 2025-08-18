@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "fxp-jax"
-version = "0.1.21"
+version = "0.2.0"
 description = "Simple fixed-point solver implemented in JAX"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,3 +19,12 @@ dev = [
     "pytest>=8.4.1",
     "ruff>=0.12.8",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+
+[tool.pyright]
+pythonPath = "src"
+
+[tool.ruff]
+src = ["src"]
