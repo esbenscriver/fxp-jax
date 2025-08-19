@@ -22,7 +22,7 @@ from fxp_jax import fxp_root
 
 jax.config.update("jax_enable_x64", True)
 
-accelerator = "squarem"
+accelerator = "SQUAREM"
 
 N = 100
 
