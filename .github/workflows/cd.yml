@@ -15,6 +15,7 @@ env:
 jobs:
 
   details:
+    name: Extract Release Details
     runs-on: ubuntu-latest
     outputs:
       new_version: ${{ steps.release.outputs.new_version }}
@@ -42,6 +43,7 @@ jobs:
           fi
 
   check_pypi:
+    name: Check version against PyPI
     needs: details
     runs-on: ubuntu-latest
     steps:
@@ -67,7 +69,8 @@ jobs:
             echo "The new version $NEW_VERSION is greater than the latest version $LATEST_VERSION on PyPI."
           fi
 
-  setup_and_build:
+  build:
+    name: Build Project
     needs: [details, check_pypi]
     runs-on: ubuntu-latest
     steps:
@@ -103,7 +106,7 @@ jobs:
 
   pypi_publish:
     name: Upload release to PyPI
-    needs: [setup_and_build, details]
+    needs: [build, details]
     runs-on: ubuntu-latest
     environment:
       name: release
@@ -121,7 +124,7 @@ jobs:
 
   github_release:
     name: Create GitHub Release
-    needs: [setup_and_build, details]
+    needs: [build, details]
     runs-on: ubuntu-latest
     permissions:
       contents: write
