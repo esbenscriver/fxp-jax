@@ -2,7 +2,7 @@
 [![CI](https://github.com/esbenscriver/fxp-jax/actions/workflows/ci.yml/badge.svg)](https://github.com/esbenscriver/fxp-jax/actions/workflows/ci.yml)
 [![CD](https://github.com/esbenscriver/fxp-jax/actions/workflows/cd.yml/badge.svg)](https://github.com/esbenscriver/fxp-jax/actions/workflows/cd.yml)
 # Fixed-point solver
-FixedPointJAX is a simple implementation of a fixed-point iteration algorithm for root finding in JAX. The implementation allow the user to solve the system of fixed point equations by standard fixed point iterations and the SQUAREM accelerator, see [Du and Varadhan (2020)](https://doi.org/10.18637/jss.v092.i07).
+fxp-jax is a simple implementation of a fixed-point iteration algorithm for root finding in JAX. The implementation allow the user to solve the system of fixed point equations by standard fixed point iterations and the SQUAREM accelerator, see [Du and Varadhan (2020)](https://doi.org/10.18637/jss.v092.i07).
 
 ## Installation
 
