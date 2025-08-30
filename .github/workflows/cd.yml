@@ -85,8 +85,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Set project version with uv
-        run: |
-          uv version ${{ needs.details.outputs.new_version }}
+        run: uv version ${{ needs.details.outputs.new_version }}
 
       - name: Install dependencies
         run: |
@@ -119,7 +118,7 @@ jobs:
           path: dist/
 
       - name: Publish distribution to PyPI
-        uses: uv publish
+        uses: pypa/gh-action-pypi-publish@release/v1
 
   github_release:
     name: Create GitHub Release
