@@ -95,8 +95,7 @@ jobs:
           uv sync --locked
 
       - name: Build source and wheel distribution
-        run: |
-          uv build
+        run: uv build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -120,7 +119,7 @@ jobs:
           path: dist/
 
       - name: Publish distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: uv publish
 
   github_release:
     name: Create GitHub Release
