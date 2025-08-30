@@ -117,8 +117,11 @@ jobs:
           name: dist
           path: dist/
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
       - name: Publish distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        run: uv publish
 
   github_release:
     name: Create GitHub Release
