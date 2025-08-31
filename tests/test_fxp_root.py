@@ -95,6 +95,7 @@ def test_fxp_root_kwargs(N: int, accelerator: str):
     [
         (1000, "None"),
         (1000, "SQUAREM"),
+        (1000, "SQUAREM_R"),
     ],
 )
 def test_fxp_root_args_kwargs(N: int, accelerator: str):

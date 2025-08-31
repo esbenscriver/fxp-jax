@@ -112,6 +112,42 @@ class fxp_root(Pytree, mutable=True):
         )
         return OptStep(x=x_next, state=next_state)
 
+    def _update_squarem_r(
+        self, fxp: Callable, step: OptStep, *args, **kwargs
+    ) -> OptStep:
+        """Update fixed-point by SQUAREM
+
+        Args:
+            fxp (Callable): system of fixed-point equations
+            step (OptStep): current states
+
+        Returns:
+            step_next (OptStep): updated states
+        """
+
+        x1 = fxp(step.x, *args, **kwargs)[0]  # first fixed-point step
+        x2 = fxp(x1, *args, **kwargs)[0]  # second fixed-point step
+
+        q1 = x1 - step.x
+        q2 = x2 - x1
+
+        q2q1 = q2 - q1
+
+        sr2 = jnp.matmul(q1.T, q1)
+        sv2 = jnp.matmul(q2q1.T, q2q1)
+        # srv = jnp.matmul(q1.T, q2q1)
+
+        alpha = jnp.sqrt(sr2 / sv2)
+
+        x_next, root = fxp(step.x - 2 * alpha * q1 + (alpha**2) * q2q1, *args, **kwargs)
+
+        next_state = FixedPointState(
+            iter_num=step.state.iter_num + 1,
+            step_norm=jnp.linalg.norm(x_next - step.x),
+            root_norm=jnp.linalg.norm(root),
+        )
+        return OptStep(x=x_next, state=next_state)
+
     def _condition(self, step: OptStep) -> jnp.ndarray:
         """Conditions for continuation of while loop
 
@@ -152,6 +188,17 @@ class fxp_root(Pytree, mutable=True):
             # Execute fixed-point iterations
             result = lax.while_loop(
                 body_fun=_fun_squarem,
+                cond_fun=self._condition,
+                init_val=OptStep(x=guess, state=self._init_state()),
+            )
+        elif self.accelerator == "SQUAREM_R":
+            # Set up accelerated fixed-point equations (SQUAREM)
+            def _fun_squarem_r(step):
+                return self._update_squarem_r(self.fun, step, *args, **kwargs)
+
+            # Execute fixed-point iterations
+            result = lax.while_loop(
+                body_fun=_fun_squarem_r,
                 cond_fun=self._condition,
                 init_val=OptStep(x=guess, state=self._init_state()),
             )
